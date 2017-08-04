@@ -1,0 +1,18 @@
+group 'net.qiguang.algorithms'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        url  "http://dl.bintray.com/algs4/maven"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'edu.princeton.cs:algs4:1.0.3'
+}
