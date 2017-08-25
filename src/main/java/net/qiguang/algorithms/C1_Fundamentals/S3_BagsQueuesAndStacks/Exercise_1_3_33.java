@@ -28,8 +28,8 @@ import java.util.NoSuchElementException;
  */
 public class Exercise_1_3_33 {
     public static class Deque<Item> implements Iterable<Item> {
-        private Node first;
-        private Node last;
+        protected Node first;
+        protected Node last;
         private int N;
 
         // construct an empty deque
@@ -39,10 +39,10 @@ public class Exercise_1_3_33 {
             N = 0;
         }
 
-        private class Node {
-            private Item item;
-            private Node next;
-            private Node prev;
+        protected class Node {
+            protected Item item;
+            protected Node next;
+            protected Node prev;
         }
 
         // is the deque empty?
