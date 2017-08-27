@@ -16,11 +16,11 @@ import edu.princeton.cs.algs4.Stopwatch;
  * B                 t2                N                         t2 * N
  * A                 t3                1                         t3
  *
- *         Grand Total:     t1 / 2 * (N^2)
+ *         Grand Total:    t1 / 2 * (N^2)
  *                       + (t2 - t1/2) * N
  *                       + t3 + t0 * x
- * Tilde approximation:   ~ t1 / 2 * (N^2) (assuming x is small)
- *     Order of growth:     N^2
+ * Tilde approximation:  ~ t1 / 2 * (N^2) (assuming x is small)
+ *     Order of growth:    N^2
  */
 public class Exercise_1_4_04 {
 
