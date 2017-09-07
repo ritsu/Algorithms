@@ -17,22 +17,22 @@ public class Exercise_1_4_19 {
     public static int[] localMinimum(int[][] nums) {
         int lo = 0;
         int hi = nums.length - 1;
-        int mid = (lo + hi) / 2;
+        int mid = lo + (hi - lo) / 2;
         int midc = mid;
-        while (hi > lo) {
+        while (hi >= lo) {
             int[] min = localMinimum(nums, mid, 0, nums.length - 1);
             if (min[0] >= 0) return min;
             else {
                 if (nums[mid - 1][midc] < nums[mid + 1][midc]) hi = mid - 1;
                 else                                           lo = mid + 1;
-                mid = (lo + hi) / 2;
+                mid = lo + (hi - lo) / 2;
             }
         }
         return new int[] {-1, -1};
     }
     public static int[] localMinimum(int[][] nums, int row, int lo, int hi) {
         int[] fail = {-1, -1};
-        int mid = (lo + hi) / 2;
+        int mid = lo + (hi - lo) / 2;
         if (lo > hi) return fail;
         if ((row == 0               || nums[row - 1][mid] > nums[row][mid]) &&
             (row == nums.length - 1 || nums[row + 1][mid] > nums[row][mid]) &&

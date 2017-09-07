@@ -14,30 +14,30 @@ public class Exercise_1_4_20 {
         // Find mid
         int lo = 0;
         int hi = a.length - 1;
-        int midc = (lo + hi) / 2;
+        int midc = lo + (hi - lo) / 2;
         while (hi >= lo) {
             if (midc == 0) break;
             if (midc == a.length - 1) break;
             if (a[midc] > a[midc - 1] && a[midc] > a[midc + 1]) break;
             if (a[midc] > a[midc + 1]) hi = midc - 1;
             else                       lo = midc + 1;
-            midc = (lo + hi) / 2;
+            midc = lo + (hi - lo) / 2;
         }
         // Search left
         lo = 0;
         hi = midc;
-        int mid = (lo + hi) / 2;
-        while (hi > lo) {
+        int mid = lo + (hi - lo) / 2;
+        while (hi >= lo) {
             if (a[mid] == key) return mid;
             if (a[mid] > key) hi = mid - 1;
             else              lo = mid + 1;
-            mid = (lo + hi) / 2;
+            mid = lo + (hi - lo) / 2;
         }
         // Search right
         lo = midc;
         hi = a.length - 1;
-        mid = (lo + hi) / 2;
-        while (hi > lo) {
+        mid = lo + (hi - lo) / 2;
+        while (hi >= lo) {
             if (a[mid] == key) return mid;
             if (a[mid] > key) hi = mid - 1;
             else              lo = mid + 1;

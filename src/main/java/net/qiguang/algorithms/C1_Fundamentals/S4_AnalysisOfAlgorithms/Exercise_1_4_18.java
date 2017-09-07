@@ -18,7 +18,7 @@ public class Exercise_1_4_18 {
         return localMinimum(nums, 0, nums.length - 1);
     }
     public static int localMinimum(int[] nums, int lo, int hi) {
-        int mid = (lo + hi) / 2;
+        int mid = lo + (hi - lo) / 2;
         if (mid == 0)               return nums[mid] < nums[mid + 1] ? mid : -1;
         if (mid == nums.length - 1) return nums[mid] < nums[mid - 1] ? mid : -1;
         if (nums[mid] < nums[mid - 1] && nums[mid] < nums[mid + 1]) return mid;
