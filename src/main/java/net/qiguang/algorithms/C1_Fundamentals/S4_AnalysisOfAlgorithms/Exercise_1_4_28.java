@@ -11,7 +11,7 @@ import edu.princeton.cs.algs4.Queue;
  */
 public class Exercise_1_4_28 {
     public static class QueueStack<Item> {
-        Queue<Item> q;
+        private Queue<Item> q;
 
         public QueueStack() {
             q = new Queue<Item>();

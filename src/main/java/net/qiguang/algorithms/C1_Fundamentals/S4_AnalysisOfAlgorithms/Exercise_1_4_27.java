@@ -12,8 +12,8 @@ import edu.princeton.cs.algs4.Stack;
  */
 public class Exercise_1_4_27 {
     public static class StackQueue<Item> {
-        Stack<Item> items;
-        Stack<Item> backup;
+        private Stack<Item> items;
+        private Stack<Item> backup;
 
         public StackQueue() {
             items = new Stack<Item>();
