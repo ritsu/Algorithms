@@ -22,22 +22,27 @@ public class Exercise_1_4_45 {
         return count;
     }
     public static double harmonic(int n) {
-        double h = 0.0;
-        while (n >= 1) {
+        double h = 1.0/n;
+        while (--n > 0) {
             h += 1.0/n;
-            n--;
         }
         return h;
     }
     public static void main(String[] args) {
-        int runs = 10;
+        int runs = 22;
         for (int n = 1; n < 1000000; n += n) {
             double hypo = n * harmonic(n);
             double count = 0;
+            double count_max = Integer.MIN_VALUE;
+            double count_min = Integer.MAX_VALUE;
             for (int i = 0; i < runs; i++) {
-                count += untilAll(n);
+                int c = untilAll(n);
+                count += c;
+                if (c > count_max) count_max = c;
+                if (c < count_min) count_min = c;
             }
-            System.out.printf("%8d %10.1f %10.1f\n", n, count/runs, hypo);
+            double count_avg = (count - count_max - count_min) / (runs - 2);
+            System.out.printf("%8d %10.1f %10.1f\n", n, count_avg, hypo);
         }
     }
 }
