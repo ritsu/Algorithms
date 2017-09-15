@@ -3,7 +3,8 @@ package net.qiguang.algorithms.C1_Fundamentals.S5_CaseStudyUnionFind;
 import java.util.Arrays;
 
 /**
- * Created on 9/11/2017.
+ * 1.5.3
+ * Do Exercise 1.5.1, but use weighted quick-union (page 228).
  */
 public class Exercise_1_5_03 {
     public static class WeightedQuickUnionUF {
