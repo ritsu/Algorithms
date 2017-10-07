@@ -28,6 +28,8 @@ package net.qiguang.algorithms.P4_8Puzzle;
  * 
  ******************************************************************************/
 
+/* Incompatible with Coursera version :(
+
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
@@ -77,3 +79,5 @@ public class PuzzleChecker {
         }
     }
 }
+
+*/

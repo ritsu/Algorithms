@@ -4,12 +4,18 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 
+/**
+ * Note: Coursera version of this problem differs from COS226 version.
+ * There are some remnants of COS226 code in here that are not necessary,
+ * but do not result in any lower of a grader score.
+ */
 public class Board {
-
     private final int dim;
     private final int[][] tiles;
-    private int dh;
-    private int dm;
+    private int dh;                    // Hamming distance
+    private int dm;                    // Manhattan distance
+    private int zi;                    // row of zero value
+    private int zj;                    // col of zero value
     
     // construct a board from an N-by-N array of tiles
     // (where tiles[i][j] = tile at row i, column j)
@@ -20,31 +26,37 @@ public class Board {
         // so we don't have to iterate through tiles again
         dh = 0;
         dm = 0;
+        zi = 0;
+        zj = 0;
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
-                this.tiles[i][j] = tiles[i][j];
-                if (tiles[i][j] != 0) {
+                int num = tiles[i][j];
+                this.tiles[i][j] = num;
+                if (num == 0) {
+                    zi = i;
+                    zj = j;
+                }
+                else {
                     // hamming distance
-                    if (tiles[i][j] != i*dim + (j+1)) dh++;
+                    if (num != i*dim + (j+1)) dh++;
                     // manhattan horizontal distance
-                    dm += Math.abs((tiles[i][j]-1) % dim - j);
+                    dm += Math.abs((num-1) % dim - j);
                     // vertical distance
-                    dm += Math.abs((tiles[i][j]-1) / dim - i);
+                    dm += Math.abs((num-1) / dim - i);
                 }
             }
         }
     }
-                                            
+
+    public int dimension() {
+        return dim;
+    }
+
     // return tile at row i, column j (or 0 if blank)
-    public int tileAt(int i, int j) {
+    private int tileAt(int i, int j) {
         if (i < 0 || i >= dim || j < 0 || j >= dim)
             throw new java.lang.IllegalArgumentException("Index out of bounds");
         return tiles[i][j];
-    }
-
-    // board size N
-    public int size() {
-        return dim;
     }
     
     // number of tiles out of place
@@ -62,36 +74,26 @@ public class Board {
         return dh == 0;
     }
 
-    // is this board solvable?
-    public boolean isSolvable() {
-        // get number of inversions
-        int inversions = 0;
-        int blankRow = 0;
-        for (int i = 0; i < size(); i++) { 
-            for (int j = 0; j < size(); j++) {
-                if (tileAt(i, j) == 0) {
-                    blankRow = i;
-                    continue;
-                }
-                for (int a = i; a < size(); a++) {
-                    for (int b = 0; b < size(); b++) {
-                        if (a == i && b <= j) continue;
-                        if (tileAt(a, b) == 0) continue;
-                        if (tileAt(a, b) < tileAt(i, j)) {
-                            inversions++;
-                        }
+    // is this board solvable? (Coursera version does not allow this)
+    private boolean isSolvable() {
+        int inv = 0;
+        for (int i = 0; i < dimension(); i++) {
+            for (int j = 0; j < dimension(); j++) {
+                if (i == zi && j == zj) continue;
+                int num = tileAt(i, j);
+                for (int ci = i; ci < dimension(); ci++) {
+                    for (int cj = 0; cj < dimension(); cj++) {
+                        if (ci == i && cj <= j) continue;
+                        if (ci == zi && cj == zj) continue;
+                        if (num > tileAt(ci, cj)) inv++;
                     }
                 }
             }
         }
-        
-        //StdOut.printf("inv = %d, blank = %d\n", inversions, blankRow);
-        if (dim % 2 == 0) {
-            return (inversions + blankRow) % 2 == 1;
-        }
-        else {
-            return inversions % 2 == 0;
-        }
+        if (dimension() % 2 == 0)
+            return (inv + zi) % 2 == 1;
+        else
+            return inv % 2 == 0;
     }
     
     // does this board equal y?
@@ -99,11 +101,14 @@ public class Board {
         if (y == this) return true;
         if (y == null) return false;
         if (y.getClass() != this.getClass()) return false;
-        
+
         Board tmp = (Board) y;
-        if (tmp.size() != this.size()) return false;
-        for (int i = 0; i < this.size(); i++) {
-            for (int j = 0; j < this.size(); j++) {
+        //return tmp.hash == this.hash;
+        if (tmp.hamming() != this.hamming()) return false;
+        if (tmp.manhattan() != this.manhattan()) return false;
+        if (tmp.dimension() != this.dimension()) return false;
+        for (int i = 0; i < this.dimension(); i++) {
+            for (int j = 0; j < this.dimension(); j++) {
                 if (tmp.tileAt(i, j) != this.tileAt(i, j)) return false;
             }
         }
@@ -112,67 +117,47 @@ public class Board {
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
-        // Find 0 tile
-        int zi = 0;
-        int zj = 0;
-        boolean found = false;
-        for (int i = 0; i < dim && !found; i++) {
-            for (int j = 0; j < dim && !found; j++) {
-                if (tiles[i][j] == 0) {
-                    zi = i;
-                    zj = j;
-                    found = true;
-                }
-            }
-        }
         // Create board for each degree of freedom of 0 tile
-        Queue<Board> q = new Queue<Board>();        
-        int[][] tcopy = new int[dim][dim];
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                tcopy[i][j] = tiles[i][j];
-            }
-        }
+        Queue<Board> q = new Queue<Board>();
         if (zi > 0) {
-            int tmp = tcopy[zi-1][zj];
-            tcopy[zi-1][zj] = 0;
-            tcopy[zi][zj] = tmp;
-            q.enqueue(new Board(tcopy));
-            tcopy[zi-1][zj] = tmp;
-            tcopy[zi][zj] = 0;
+            int tmp = tiles[zi-1][zj];
+            tiles[zi-1][zj] = 0;
+            tiles[zi][zj] = tmp;
+            q.enqueue(new Board(tiles));
+            tiles[zi-1][zj] = tmp;
+            tiles[zi][zj] = 0;
         }
         if (zi < (dim-1)) {
-            int tmp = tcopy[zi+1][zj];
-            tcopy[zi+1][zj] = 0;
-            tcopy[zi][zj] = tmp;
-            q.enqueue(new Board(tcopy));
-            tcopy[zi+1][zj] = tmp;
-            tcopy[zi][zj] = 0;
+            int tmp = tiles[zi+1][zj];
+            tiles[zi+1][zj] = 0;
+            tiles[zi][zj] = tmp;
+            q.enqueue(new Board(tiles));
+            tiles[zi+1][zj] = tmp;
+            tiles[zi][zj] = 0;
         }
         if (zj > 0) {
-            int tmp = tcopy[zi][zj-1];
-            tcopy[zi][zj-1] = 0;
-            tcopy[zi][zj] = tmp;
-            q.enqueue(new Board(tcopy));
-            tcopy[zi][zj-1] = tmp;
-            tcopy[zi][zj] = 0;
+            int tmp = tiles[zi][zj-1];
+            tiles[zi][zj-1] = 0;
+            tiles[zi][zj] = tmp;
+            q.enqueue(new Board(tiles));
+            tiles[zi][zj-1] = tmp;
+            tiles[zi][zj] = 0;
         }
         if (zj < (dim-1)) {
-            int tmp = tcopy[zi][zj+1];
-            tcopy[zi][zj+1] = 0;
-            tcopy[zi][zj] = tmp;
-            q.enqueue(new Board(tcopy));
-            tcopy[zi][zj+1] = tmp;
-            tcopy[zi][zj] = 0;
+            int tmp = tiles[zi][zj+1];
+            tiles[zi][zj+1] = 0;
+            tiles[zi][zj] = tmp;
+            q.enqueue(new Board(tiles));
+            tiles[zi][zj+1] = tmp;
+            tiles[zi][zj] = 0;
         }
-        
         return q;
     }
 
     // string representation of this board (in the output format specified below)
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(dim + "\n");
+        s.append(dim).append("\n");
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
                 s.append(String.format("%2d ", tileAt(i, j)));
@@ -184,19 +169,6 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of blocks
     public Board twin() {
-        // Find 0 tile
-        int zi = 0;
-        int zj = 0;
-        boolean found = false;
-        for (int i = 0; i < dim && !found; i++) {
-            for (int j = 0; j < dim && !found; j++) {
-                if (tiles[i][j] == 0) {
-                    zi = i;
-                    zj = j;
-                    found = true;
-                }
-            }
-        }
         // Get (non-zero) blocks to switch
         int ai = 0;
         int aj = 0;
@@ -211,7 +183,6 @@ public class Board {
             bj = 1;
         }
         // Create board
-        Queue<Board> q = new Queue<Board>();
         int[][] tcopy = new int[dim][dim];
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {

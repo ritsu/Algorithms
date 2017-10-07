@@ -20,6 +20,8 @@ package net.qiguang.algorithms.P4_8Puzzle;
  *
  ******************************************************************************/
 
+/* Incompatible with Coursera version :(
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -125,7 +127,7 @@ public class SolverVisualizer {
     public static void main(String[] args) {
         // Environment specific input, delete when submitting ----------
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        args = new String[] {cl.getResource("algs4-data/P4_8Puzzle/puzzle14.txt").getFile()};
+        args = new String[] {cl.getResource("algs4-data/P4_8Puzzle/puzzle11.txt").getFile()};
         // -------------------------------------------------------------
 
         // for each command-line argument
@@ -181,6 +183,9 @@ public class SolverVisualizer {
                 StdDraw.show(ANIMATE_TIME + PAUSE_TIME);
             }
             StdOut.println(title);
-        }            
+        }
     }
 }
+
+*/
+
