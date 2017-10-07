@@ -4,8 +4,12 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 
+/**
+ * Note: Coursera version of this problem differs from COS226 version.
+ * There are some remnants of COS226 code in here that are not necessary,
+ * but do not result in any lower of a grader score.
+ */
 public class Board {
-
     private final int dim;
     private final int[][] tiles;
     private int dh;                    // Hamming distance
@@ -43,17 +47,16 @@ public class Board {
             }
         }
     }
-                                            
+
+    public int dimension() {
+        return dim;
+    }
+
     // return tile at row i, column j (or 0 if blank)
-    public int tileAt(int i, int j) {
+    private int tileAt(int i, int j) {
         if (i < 0 || i >= dim || j < 0 || j >= dim)
             throw new java.lang.IllegalArgumentException("Index out of bounds");
         return tiles[i][j];
-    }
-
-    // board size N
-    public int size() {
-        return dim;
     }
     
     // number of tiles out of place
@@ -71,25 +74,23 @@ public class Board {
         return dh == 0;
     }
 
-    // is this board solvable?
-    public boolean isSolvable() {
+    // is this board solvable? (Coursera version does not allow this)
+    private boolean isSolvable() {
         int inv = 0;
-        int exp = 1;
-        for (int i = 0; i < size(); i++) {
-            for (int j = 0; j < size(); j++) {
+        for (int i = 0; i < dimension(); i++) {
+            for (int j = 0; j < dimension(); j++) {
                 if (i == zi && j == zj) continue;
                 int num = tileAt(i, j);
-                for (int ci = i; ci < size(); ci++) {
-                    for (int cj = 0; cj < size(); cj++) {
+                for (int ci = i; ci < dimension(); ci++) {
+                    for (int cj = 0; cj < dimension(); cj++) {
                         if (ci == i && cj <= j) continue;
                         if (ci == zi && cj == zj) continue;
                         if (num > tileAt(ci, cj)) inv++;
                     }
                 }
-                exp++;
             }
         }
-        if (size() % 2 == 0)
+        if (dimension() % 2 == 0)
             return (inv + zi) % 2 == 1;
         else
             return inv % 2 == 0;
@@ -100,13 +101,14 @@ public class Board {
         if (y == this) return true;
         if (y == null) return false;
         if (y.getClass() != this.getClass()) return false;
-        
+
         Board tmp = (Board) y;
+        //return tmp.hash == this.hash;
         if (tmp.hamming() != this.hamming()) return false;
         if (tmp.manhattan() != this.manhattan()) return false;
-        if (tmp.size() != this.size()) return false;
-        for (int i = 0; i < this.size(); i++) {
-            for (int j = 0; j < this.size(); j++) {
+        if (tmp.dimension() != this.dimension()) return false;
+        for (int i = 0; i < this.dimension(); i++) {
+            for (int j = 0; j < this.dimension(); j++) {
                 if (tmp.tileAt(i, j) != this.tileAt(i, j)) return false;
             }
         }
@@ -155,7 +157,7 @@ public class Board {
     // string representation of this board (in the output format specified below)
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(dim + "\n");
+        s.append(dim).append("\n");
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
                 s.append(String.format("%2d ", tileAt(i, j)));
@@ -181,7 +183,6 @@ public class Board {
             bj = 1;
         }
         // Create board
-        Queue<Board> q = new Queue<Board>();
         int[][] tcopy = new int[dim][dim];
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {
@@ -226,48 +227,5 @@ public class Board {
             StdOut.printf("equals neighbor = %s\n", b.equals(neighbor));
             StdOut.printf("twin:\n%s\n", neighbor.twin());
         }
-
-        // Solvable test
-        args = new String[] {
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle2x2-unsolvable1.txt").getFile(),
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle2x2-unsolvable2.txt").getFile(),
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle2x2-unsolvable3.txt").getFile(),
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle3x3-unsolvable1.txt").getFile(),
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle3x3-unsolvable2.txt").getFile(),
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle3x3-unsolvable.txt").getFile(),
-                cl.getResource("algs4-data/P4_8Puzzle/puzzle4x4-unsolvable.txt").getFile()
-        };
-        for (String f : args) {
-            in = new In(f);
-            n = in.readInt();
-            tiles = new int[n][n];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    tiles[i][j] = in.readInt();
-                }
-            }
-            b = new Board(tiles);
-            StdOut.printf("%s = %s\n", f, b.isSolvable());
-        }
-        args = new String[51];
-        for (int i = 0; i <= 50; i++) {
-            String num = i < 10 ? "0" + i : String.valueOf(i);
-            String f = "algs4-data/P4_8Puzzle/puzzle" + num + ".txt";
-            args[i] = cl.getResource(f).getFile();
-        }
-        for (String f : args) {
-            in = new In(f);
-            n = in.readInt();
-            tiles = new int[n][n];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    tiles[i][j] = in.readInt();
-                }
-            }
-            b = new Board(tiles);
-            StdOut.printf("%s = %s\n", f, b.isSolvable());
-        }
-
-
     }
 }

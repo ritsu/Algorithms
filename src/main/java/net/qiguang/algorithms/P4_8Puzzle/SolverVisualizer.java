@@ -20,6 +20,8 @@ package net.qiguang.algorithms.P4_8Puzzle;
  *
  ******************************************************************************/
 
+/* Incompatible with Coursera version :(
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -181,6 +183,9 @@ public class SolverVisualizer {
                 StdDraw.show(ANIMATE_TIME + PAUSE_TIME);
             }
             StdOut.println(title);
-        }            
+        }
     }
 }
+
+*/
+
