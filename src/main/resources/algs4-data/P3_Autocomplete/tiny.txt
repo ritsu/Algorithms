@@ -1,0 +1,7 @@
+6
+     5	smog
+    10	buck
+    12	sad
+    20	spite
+    15	spit
+     7	spy
