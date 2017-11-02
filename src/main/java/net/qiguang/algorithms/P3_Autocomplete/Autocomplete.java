@@ -37,7 +37,7 @@ public class Autocomplete {
         int first = BinarySearchDeluxe.firstIndexOf(
                 terms, p, Term.byPrefixOrder(prefix.length()));
         if (first < 0)
-            return null;
+            return new Term[] {};
         int last = BinarySearchDeluxe.lastIndexOf(
                 terms, p, Term.byPrefixOrder(prefix.length()));
         Term[] matches = new Term[last - first + 1];
